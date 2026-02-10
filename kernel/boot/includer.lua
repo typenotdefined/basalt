@@ -31,23 +31,20 @@ function Basalt.Includer.IncludeFile(filePath, realm)
     if(isnumber(realm)) then
         if(realm == Basalt.RealmType.SERVER) then
             if(SERVER) then
-                include(filePath)
-                return
+                return include(filePath)
             end
         elseif(realm == Basalt.RealmType.SHARED) then
             if(SERVER) then
                 AddCSLuaFile(filePath)
             end
 
-            include(filePath)
-            return
+            return include(filePath)
         elseif(realm == Basalt.RealmType.CLIENT) then
             if(SERVER) then
                 AddCSLuaFile(filePath)
                 return 
             else
-                include(filePath)
-                return
+                return include(filePath)
             end
         end
     else
@@ -56,23 +53,20 @@ function Basalt.Includer.IncludeFile(filePath, realm)
 
         if(filePrefix == "sv_") then
             if(SERVER) then
-                include(filePath)
-                return 
+                return include(filePath) 
             end
         elseif(filePrefix == "sh_") then
             if(SERVER) then
                 AddCSLuaFile(filePath)
             end
 
-            include(filePath)
-            return 
+            return include(filePath)
         elseif(filePrefix == "cl_") then
             if(SERVER) then
                 AddCSLuaFile(filePath)
                 return 
             else
-                include(filePath)
-                return
+                return include(filePath)
             end
         end
     end

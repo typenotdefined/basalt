@@ -2,10 +2,6 @@
         Boot
 
     This file serves as a main entry point to the framework.
-
-    WARNING:
-        This framework is using a C binary modules and will not function without them. If you do not have
-        a Basalt binary modules, contact UniQodex or other authorized maintainer of Basalt.
 ]]--
 
 DeriveGamemode("base")
@@ -78,9 +74,9 @@ function Basalt.IncludeKernelLib(filePath, realm, callback)
     end
 end
 
-Basalt.Console.PrintInfo("Initializing kernel...")
-
 Basalt.IncludeKernelLib("console", Basalt.RealmType.SHARED)
+
+Basalt.Console.PrintInfo("Initializing kernel...")
 
 local ok = Basalt.Console.PrintOK
 
@@ -94,7 +90,7 @@ Basalt.Console.PrintInfo("Initializing kernel modules...")
 
 Basalt.Module.InitializeModules(function(problemsFound)
     if(problemsFound >= 1) then
-        Basalt.Console.PrintWarning("Failed to initialize some modules! Found ("..problemsFounds..") errors!")
+        Basalt.Console.PrintWarning("Failed to initialize some modules! Found ("..problemsFound..") errors!")
     else
         ok("Modules initialized...")
     end

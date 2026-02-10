@@ -16,42 +16,87 @@ Basalt.Module.Data = Basalt.Module.Data or {}
 
 function Basalt.Module.InitializeModules(callback)
     local problemsFound = 0
+    local loadedHooks = {}
 
     local _, moduleFolders = file.Find("basalt/modules/*", "LUA", "nameasc")
 
-    local function setAsFailing(tbl, reason)
-        Basalt.Console.PrintWarning("(MOD_CONFIG_ERR) "..reason)
-        tbl.STATUS = "[ FAIL ] "..reason
-    end
-
     for i=1, #moduleFolders do
-        if(file.Exists("basalt/modules/"..moduleFolders[i].."/mod.lua")) then
+        local isFatal = false
+        local isNonFatal = false
+
+        if(file.Exists("basalt/modules/"..moduleFolders[i].."/mod.lua", "LUA")) then
             local moduleData = Basalt.Includer.IncludeFile("basalt/modules/"..moduleFolders[i].."/mod.lua", Basalt.RealmType.SHARED)
 
-            -- check if everything is existing as it should be
-            if(!moduleData.ModuleName) then
-                Basalt.Console.PrintWarning("(MOD_CONFIG_ERR) Not found ModuleName in ("..moduleFolders[i]..")! Using raw path name instead...")
-                moduleData.ModuleName = moduleFolders[i]
+            if(!moduleData.Name) then
+                Basalt.Console.PrintWarning("(MOD_CONFIG_ERR) Not found Name in module '"..moduleFolders[i].."'! Using raw path name instead...")
+                moduleData.Name = moduleFolders[i]
+
                 problemsFound = problemsFound + 1
+                isNonFatal = true
             end
 
-            Basalt.Module.Data[moduleData.ModuleName] = {}
+            Basalt.Module.Data[moduleData.Name] = {}
 
-            if(!moduleData.ModuleDeclare) then
-                Basalt.Console.PrintWarning("(MOD_CONFIG_ERR) Not found ModuleDeclare for ("..moduleData.ModuleName..")!\n[ !!! ] This module will be disabled for reliability reasons!\n")
-                Basalt.Module.Data[moduleData.ModuleName].STATUS = "[ FAIL ] Missing ModuleDeclare"
+            if(!moduleData.Declare) then -- fatal
+                Basalt.Console.PrintWarning("(MOD_CONFIG_ERR) Not found Declare for module '"..moduleData.Name.."'!\nThis module will be disabled for reliability reasons!\n")
+
+                Basalt.Module.Data[moduleData.Name].STATUS = "[ FAIL ] Missing Declare"
                 problemsFound = problemsFound + 1
+                isFatal = true
+            end
+
+            if(!moduleData.Author) then
+                moduleData.Author = "Unknown"
+
+                Basalt.Console.PrintWarning("(MOD_CONFIG_WARN) Not found 'Author' for module '"..moduleData.Name.."'...")
+                problemsFound = problemsFound + 1
+                isNonFatal = true
+            end
+
+            if(!moduleData.Description) then -- incomplete module, forces to write descriptions for their module, name 'hud' is not sufficient, explain what your 'hud' does atleast
+                moduleData.Description = "Unknown"
+
+                Basalt.Console.PrintWarning("(MOD_CONFIG_WARN) Not found 'Description' for module '"..moduleData.Name.."'...")
+                problemsFound = problemsFound + 1
+                isNonFatal = true
+            end
+
+            -- Resolve collisions
+            for j=1, #moduleData.Declare do -- can fatal
+                local dhooks = moduleData.Declare[j]
+                if(loadedHooks[dhooks]) then
+                    Basalt.Console.PrintWarning("(MOD_COLLISION) Hook '"..dhooks.."' in module '"..moduleData.Name.."' collides with module '"..loadedHooks[dhooks].."'!\nThis module will not be loaded!")
+                    Basalt.Module.Data[moduleData.Name] = { STATUS = "[ FAIL ] Hook collision: "..dhooks }
+                    problemsFound = problemsFound + 1
+                    isFatal = true
+                    break
+                end
+            end
+
+            if(isFatal) then
+                Basalt.Console.PrintWarning("(MOD_CONFIG_FATAL) Module '"..moduleData.Name.."' will not be loaded due to fatal errors!")
                 continue
+
             end
 
-            -- end check
-            if(problemsFound == 0) then
-                Basalt.Console.PrintOK("Module ("..moduleData.ModuleName..") loaded with no errors")    
-            else
-                Basalt.Console.PrintWarning("Module ("..moduleData.ModuleName..") loaded with non-fatal errors")
+            if(isNonFatal) then
+                Basalt.Console.PrintWarning("(MOD_CONFIG_NFATAL) Module '"..moduleData.Name.."' has generated a non-fatal errors...")
             end
 
-            Basalt.Module.Data[moduleData.ModuleName].STATUS = "[ OK ] No errors found"
+            table.CopyFromTo(moduleData, Basalt.Module.Data[moduleData.Name])
+
+            for j=1, #moduleData.Declare do
+                local dhooks = moduleData.Declare[j]
+                loadedHooks[dhooks] = moduleData.Name
+            end
+
+            Basalt.Includer.IncludeFolder("basalt/modules/"..moduleFolders[i])
+
+            Basalt.Module.Data[moduleData.Name].STATUS = "[ OK ] Module loaded"
+        else -- mod.lua not found:
+            Basalt.Console.PrintWarning("(MOD_CONFIG_NTFOUND) Module mod config not found for '"..moduleFolders[i].."'!\nThis module will not be loaded!\n")
+            problemsFound = problemsFound + 1
+            continue
         end
     end
 
