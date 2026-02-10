@@ -1,0 +1,8 @@
+"basalt"
+{
+    "base"          "base"
+    "title"         "Basalt Framework"
+    "author"        "UniQodex"
+    "category"      "rp"
+    "description"   "Copyright (c) 2026"
+}
