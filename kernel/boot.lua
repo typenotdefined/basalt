@@ -84,7 +84,7 @@ Basalt.IncludeKernelLib("module", Basalt.RealmType.SHARED, function() ok("Module
 
 Basalt.Console.PrintOK("Kernel libs loaded")
 
-Basalt.Console.PrintInfo("Initializing kernel modules...")
+Basalt.Console.PrintInfo("Initializing modules...")
 
 Basalt.Module.InitializeModules(function(problemsFound)
     if(problemsFound >= 1) then

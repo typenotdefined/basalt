@@ -1,3 +1,16 @@
 ======= Basalt Framework Roleplay =======
 A general-purpose roleplaying framework for Garry's mod. It is my personal project, nothing really serious.
 It is licensed under the MIT License so you can do whatever you want with the code, just credit me properly.
+
+======= About =======
+Basalt is a open-source, modular and mainly fault-tolerant reliable general-purpose roleplay framework for Garry's mod, planned to be extended with a C/C++ native binary modules. It mainly targets and is developed in beta x86-64 Linux server installation altough windows version and 32-bit version should work too.
+
+======= Why? =======
+It is 'halfly' reinventing wheel type of framework, it is built mainly around being "fault-tolerant" and be more pleaser to use to
+non-experienced server owners. The first type of guaranteed reliability is the module loading system.
+
+======= Module Loading =======
+Module acts as a plugin seen in other frameworks such as helix or nutscript but are far more resiliant against plugin-to-plugin collisions such as 2 plugins overriding the same hook creating race condition of which hook will use it first.
+The kernel firstly maps out all module declarations on used/registered hooks and if it finds same hooks in two plugins it will halt loading of the first module to be found using identical hook rather than allowing it to load and ultimately creating instability and bugs. The system operator will be notified about this collision.
+
+The downside of such system is that the module creator has to write much longer and uniformed module config files.
