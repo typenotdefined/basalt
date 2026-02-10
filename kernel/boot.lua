@@ -76,8 +76,6 @@ end
 
 Basalt.IncludeKernelLib("console", Basalt.RealmType.SHARED)
 
-Basalt.Console.PrintInfo("Initializing kernel...")
-
 local ok = Basalt.Console.PrintOK
 
 Basalt.IncludeKernelLib("includer", Basalt.RealmType.SHARED, function() ok("Includer loaded") end)
@@ -95,3 +93,6 @@ Basalt.Module.InitializeModules(function(problemsFound)
         ok("Modules initialized...")
     end
 end)
+
+collectgarbage("collect")
+Basalt.Console.PrintInfo("Basalt initialized! v"..Basalt.VERSION.." Preview: "..tostring(Basalt.PREVIEW))
