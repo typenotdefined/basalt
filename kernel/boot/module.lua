@@ -93,7 +93,7 @@ function Basalt.Module.InitializeModules(callback)
                 loadedHooks[dhooks] = moduleData.Name
             end
 
-            Basalt.Includer.IncludeFolder("basalt/modules/"..modID)
+            Basalt.Includer.IncludeFolder("basalt/modules/"..modID, true, true)
 
             Basalt.Module.Data[modID].STATUS = "[ OK ] Module loaded"
             

@@ -10,7 +10,7 @@ _G.Basalt = _G.Basalt or {}
 
 GM.Name = "Basalt"
 GM.Author = "UniQodex"
-Basalt.VERSION = "0.01"
+Basalt.VERSION = "0.1.1"
 Basalt.PREVIEW = true 
 
 function GM:GetGameDescription()
