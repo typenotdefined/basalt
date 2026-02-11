@@ -1,0 +1,13 @@
+======= Basalt Binary Modules =======
+This is the source code for the C binary modules for the Basalt Roleplaying framework.
+
+The main target is the 64x Linux server installation.
+
+======= wrapper =======
+This serves as a base for creating binary modules in ANSI C and is to be included in all subsequent modules.
+The original repository had premake5.lua, I made it to use the Makefile system because I don't know premake.
+Check the provided README for more informations.
+
+======= How to add your module =======
+Simply add your module name in the Makefile in the 'Module Registration' section and include needed headers!
+All modules are built and placed in the ./build directory.
